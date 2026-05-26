@@ -22,19 +22,19 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
 }));
 
+// app.use(cors({
+//   origin: process.env.CLIENT_URL || 'http://localhost:3000',
+//   credentials: true,
+// }));
+
+
+
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-
-
-
-// app.use(cors({
-//   origin: 'http://localhost:3000',
-//   credentials: true,
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-// }));
 
 
 
@@ -66,26 +66,26 @@ app.get('/api/csrf-token', getCsrfToken);
 app.get('/sitemap.xml', getSitemap);
 app.get('/robots.txt', getRobotsTxt);
 
-// Serve static files from React build
-const clientBuild = path.join(__dirname, '..', 'client', 'build');
-app.use(express.static(clientBuild, {
-  maxAge: '1y',
-  immutable: true,
-  setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-cache');
-    }
-  },
-}));
+// // Serve static files from React build
+// const clientBuild = path.join(__dirname, '..', 'client', 'build');
+// app.use(express.static(clientBuild, {
+//   maxAge: '1y',
+//   immutable: true,
+//   setHeaders: (res, filePath) => {
+//     if (filePath.endsWith('.html')) {
+//       res.setHeader('Cache-Control', 'no-cache');
+//     }
+//   },
+// }));
 
-// SSR - Server side rendering for bot/crawler requests
-const ssrMiddleware = require('./ssr');
-app.use(ssrMiddleware);
+// // SSR - Server side rendering for bot/crawler requests
+// const ssrMiddleware = require('./ssr');
+// app.use(ssrMiddleware);
 
-// Fallback to React SPA for all other routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(clientBuild, 'index.html'));
-});
+// // Fallback to React SPA for all other routes
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(clientBuild, 'index.html'));
+// });
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
